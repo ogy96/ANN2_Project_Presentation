@@ -3,6 +3,7 @@ theme: seriph
 title: Comparing Classical Machine Learning and Deep Temporal Models for Human Activity Recognition from Wearable Time Series
 author: Ogün Yilmaz
 transition: fade
+background: linear-gradient(135deg, #f8f9fa, #ffffff)
 ---
 
 # Temporal Models for HAR
@@ -68,6 +69,8 @@ We follow the **official CAPTURE-24 benchmark pipeline**:
 
 No cross-participant leakage.
 
+- Validation subset sampled from P001–P100 (**seed = 42**) for CNN+HMM and tuned CNN–LSTM
+
 ---
 
 ## CAPTURE-24 Processing Pipeline
@@ -124,7 +127,7 @@ All CNNs share the same ResNet-style backbone.
 
 <img src="/tuned_cnn_lstm_architecture.png" style="width:40%; margin:auto;" />
 
-**Shared CNN extracts window-level features; LSTM models temporal dependencies across windows.**
+**Shared CNN extracts window features; LSTM uses consecutive windows to make predictions more consistent.**
 
 ---
 
@@ -166,17 +169,37 @@ _Temporal modelling reduces confusion between sedentary, light and moderate-to-v
 
 ---
 
-## Discussion
+## Research Questions — Summary
 
 <br>
 
-- Treating windows independently is insufficient for free-living HAR
-- Explicit transition modelling (HMM) aligns well with daily activity patterns
-- End-to-end temporal models offer flexibility but require careful tuning
-- Temporal modelling mitigates:
-  - participant variability
-  - class imbalance
-  - noisy boundaries between activities
+- **RQ1:** How do feature-based models compare with deep learning models for HAR in free-living data?  
+  → Models that incorporate temporal structure outperform window-based classifiers across both classical and deep learning approaches. Deep models provide competitive performance and enable end-to-end temporal modelling.
+
+- **RQ2:** Does the use of temporal information improve performance and prediction consistency?  
+  → Yes. Both CNN–HMM and CNN–LSTM consistently outperform window-based CNNs.
+
+- **RQ3:** How do HMM-based smoothing and end-to-end recurrent models differ in performance and prediction stability?  
+  → In our experiments, **CNN+HMM performs best overall**, while **CNN–LSTM improves temporal consistency** but is more sensitive to configuration.
+
+---
+
+
+## Limitations & Future Work
+
+<br>
+
+### Limitations
+- Fixed 10s windows can miss very short activity changes
+- CNN–LSTM performance depends on sequence length and parameter choices
+- Activity transitions are not modelled explicitly
+
+<br>
+
+### Future Work
+- Use models or losses that focus on activity transitions
+- Combine short and long time windows
+- Apply the approach to ageing and mobility variability studies
 
 ---
 
@@ -187,7 +210,8 @@ _Temporal modelling reduces confusion between sedentary, light and moderate-to-v
 - Temporal modelling substantially improves HAR performance on CAPTURE-24
 - **CNN + HMM** provides the strongest and most stable results
 - **CNN–LSTM** is a viable end-to-end alternative
-- Results highlight the importance of modelling activity transitions explicitly
+- Results highlight the benefit of accounting for temporal structure in free-living HAR
+
 
 ---
 
